@@ -27,7 +27,9 @@ df.plot.scatter('lon', 'lat', s=1)
 # plt.show()
 # quit()
 
-coords = df.as_matrix(columns=['lat', 'lon'])
+# coords = df.as_matrix(columns=['lat', 'lon'])
+coords = df.drop(['geohash', 'short_geohash'], axis=1).values
+print(coords, type(coords))
 
 db = DBSCAN(eps=DBSCAN_EPS, min_samples=DBSCAN_MIN, algorithm='ball_tree', metric='haversine').fit(np.radians(coords))
 
@@ -35,13 +37,10 @@ cluster_labels = db.labels_
 num_clusters = len(set(cluster_labels)) - 1  # -1 ?
 clusters = pd.Series([coords[cluster_labels == n] for n in range(num_clusters)])
 print('Number of clusters: {}'.format(num_clusters))
-print('clusters', clusters)
 out = []
 labels = []
 for i, cluster in enumerate(clusters):
-    # print('item', cluster, type(cluster))
     for point in cluster:
-        # print('point', point, type(point))
         out.append({
             'lat': point[0],
             'lon': point[1]
