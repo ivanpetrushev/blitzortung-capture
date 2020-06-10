@@ -32,7 +32,9 @@ def on_error(ws, error):
 def on_close(ws):
     global save
     print("### closed ###")
-    with open('capture.json', 'w') as fp:
+    now = datetime.now().strftime('%Y%m%d-%H%M%S')
+    filename = 'capture-' + now + '.json'
+    with open(filename, 'w') as fp:
         json.dump(save, fp)
     print('saved')
 
