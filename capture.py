@@ -21,9 +21,8 @@ def on_message(ws, message):
     counter += 1
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     gh = geohash.encode(data['lat'], data['lon'])
-    # if gh.startswith('g') or gh.startswith('u') or gh.startswith('e') or gh.startswith('s'):
-    save.append({'lat': data['lat'], 'lon': data['lon'], 'geohash': gh})
-    print(f"message #{counter} {now} {gh} {data['lat']} {data['lon']} save len: {len(save)}")
+    save.append({'lat': data['lat'], 'lon': data['lon'], 'geohash': gh, 'ts': int(time.time())})
+    print(f"message #{counter} {now} {gh} {data['lat']} {data['lon']}")
 
 
 def on_error(ws, error):
