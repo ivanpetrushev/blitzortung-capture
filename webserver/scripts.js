@@ -23,13 +23,13 @@ fetch('data.json')
 
 cycleData = () => {
     currentIdx++;
-    if (currentIdx >= data.length) {
+    if (currentIdx >= Object.keys(data).length) {
         currentIdx = 0;
     }
 
     let key = Object.keys(data)[currentIdx];
     let selected = data[key];
-    console.log('selected', currentIdx, key, selected)
+    console.log('selected', key)
     for (let i in markers) {
         mymap.removeLayer(markers[i]);
     }
@@ -40,3 +40,5 @@ cycleData = () => {
         markers.push(marker);
     }
 }
+
+setInterval(cycleData, 2000);
