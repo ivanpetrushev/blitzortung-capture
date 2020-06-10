@@ -1,4 +1,4 @@
-let mymap = L.map('mapid').setView([42.7389, 25.513], 8);
+let mymap = L.map('mapid').setView([42.7389, 25.513], 7);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
     maxZoom: 18,
@@ -12,12 +12,11 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 let data = [];
 let markers = [];
-let currentIdx = 0;
+let currentIdx = -1;
 
 fetch('data.json')
     .then(response => response.json())
     .then(json => {
-        console.log('json is', json)
         data = json;
     })
 
@@ -25,6 +24,9 @@ cycleData = () => {
     currentIdx++;
     if (currentIdx >= Object.keys(data).length) {
         currentIdx = 0;
+    }
+    if (currentIdx === 0) {
+        console.log('===========================');
     }
 
     let key = Object.keys(data)[currentIdx];
