@@ -2,6 +2,7 @@ import websocket
 import json
 from datetime import datetime
 import geohash
+from random import randint
 
 try:
     import thread
@@ -51,7 +52,9 @@ def on_open(ws):
 
 if __name__ == "__main__":
     websocket.enableTrace(True)
-    ws = websocket.WebSocketApp("wss://ws5.blitzortung.org:3000/",
+    url = 'ws://ws' + str(randint(1, 5)) + '.blitzortung.org'
+    port = str(randint(8050, 8090))
+    ws = websocket.WebSocketApp(url + ':' + port + '/',
                                 on_message=on_message,
                                 on_error=on_error,
                                 on_close=on_close)
