@@ -5,8 +5,12 @@ from sklearn.cluster import DBSCAN
 from shapely.geometry import MultiPoint
 from geopy.distance import great_circle
 
+DBSCAN_EPS = 20/6371
+DBSCAN_MIN = 5
 
-filter_geohash = ['u0', 'u1', 'u2', 'u3', 'u8', 'u9', 'sp', 'sr', 'sx']
+
+# filter_geohash = ['u0', 'u1', 'u2', 'u3', 'u8', 'u9', 'sp', 'sr', 'sx']  # Europe
+filter_geohash = ['u2', 'u8', 'sr', 'sx']  # Bulgaria
 
 
 def shorten_geohash(row):
@@ -25,7 +29,7 @@ df.plot.scatter('lon', 'lat', s=1)
 
 coords = df.as_matrix(columns=['lat', 'lon'])
 
-db = DBSCAN(eps=20/6371, min_samples=5, algorithm='ball_tree', metric='haversine').fit(np.radians(coords))
+db = DBSCAN(eps=DBSCAN_EPS, min_samples=DBSCAN_MIN, algorithm='ball_tree', metric='haversine').fit(np.radians(coords))
 
 cluster_labels = db.labels_
 num_clusters = len(set(cluster_labels)) - 1  # -1 ?
