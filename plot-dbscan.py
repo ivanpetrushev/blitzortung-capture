@@ -19,15 +19,13 @@ df = df[df.short_geohash.isin(filter_geohash)]
 print(df.head(10))
 
 # show preview of all strikes
-# df.plot.scatter('lon', 'lat', s=1)
+df.plot.scatter('lon', 'lat', s=1)
 # plt.show()
 # quit()
 
 coords = df.as_matrix(columns=['lat', 'lon'])
 
-db = DBSCAN(eps=10/6371, min_samples=5, algorithm='ball_tree', metric='haversine').fit(np.radians(coords))
-
-print(db)
+db = DBSCAN(eps=20/6371, min_samples=5, algorithm='ball_tree', metric='haversine').fit(np.radians(coords))
 
 cluster_labels = db.labels_
 num_clusters = len(set(cluster_labels)) - 1  # -1 ?
