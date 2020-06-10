@@ -40,6 +40,7 @@ centers = kmeans.cluster_centers_  # Coordinates of cluster centers.
 labels = kmeans.predict(df[df.columns[0:2]])  # Labels of each point
 print('After labelizing')
 print(df.head(10))
+print('labels', labels)
 
 df.plot.scatter(x='lon', y='lat', c=labels, s=2, cmap='viridis')
 plt.scatter(centers[:, 1], centers[:, 0], c='black', s=100, alpha=0.5)
