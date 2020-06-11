@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 import geohash
 from random import randint
+import pandas as pd
 
 try:
     import thread
@@ -21,8 +22,15 @@ def on_message(ws, message):
     counter += 1
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     gh = geohash.encode(data['lat'], data['lon'])
-    save.append({'lat': data['lat'], 'lon': data['lon'], 'geohash': gh, 'ts': int(time.time())})
-    print(f"message #{counter} {now} {gh} {data['lat']} {data['lon']}")
+    save.append({
+        'lat': data['lat'],
+        'lon': data['lon'],
+        'geohash': gh,
+        'geohash_short_2': gh[:2],
+        'ts': int(time.time())
+    })
+    print(
+        f"message #{counter} {now} {gh} {data['lat']} {data['lon']} save len: {len(save)}")
 
 
 def on_error(ws, error):
@@ -45,12 +53,17 @@ def on_open(ws):
         while True:
             time.sleep(30)
             ws.send('{}')
-            
-        # time.sleep(1)
-        # ws.close()
-        # print("thread terminating...")
+
+    def calculate(*args):
+        global save
+        while True:
+            time.sleep(10)
+            ts_threshold = int(time.time()) - 15
+            save = [x for x in save if x['ts'] > ts_threshold]
+            print("CALCULATING")
 
     thread.start_new_thread(run, ())
+    thread.start_new_thread(calculate, ())
 
 
 if __name__ == "__main__":
