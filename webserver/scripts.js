@@ -18,24 +18,46 @@ fetch('data.json')
     .then(response => response.json())
     .then(json => {
         data = json;
+        document.getElementById('slider').max = Object.keys(data).length - 1;
     })
 
 cycleData = () => {
-    currentIdx++;
-    if (currentIdx >= Object.keys(data).length) {
-        currentIdx = 0;
-    }
-    if (currentIdx === 0) {
-        console.log('===========================');
-    }
-
-    let key = Object.keys(data)[currentIdx];
-    let selected = data[key];
-    console.log('selected', key)
-    document.getElementById('title').innerHTML = key;
     for (let i in markers) {
         mymap.removeLayer(markers[i]);
     }
+
+    currentIdx++;
+    if (currentIdx >= Object.keys(data).length) {
+        currentIdx = -1;
+    }
+    if (currentIdx === -1) {
+        document.getElementById('title').innerHTML = 'Begin';
+        console.log('===========================');
+        return;
+    }
+
+    displayData(currentIdx);
+
+    let oldValue = document.getElementById('slider').value;
+    document.getElementById('slider').value = currentIdx;
+}
+
+let interval = setInterval(cycleData, 1000);
+
+onSliderChanged = (value) => {
+    clearInterval(interval);
+    displayData(value);
+}
+
+displayData = (i) => {
+    for (let i in markers) {
+        mymap.removeLayer(markers[i]);
+    }
+
+    let key = Object.keys(data)[i];
+    let selected = data[key];
+    console.log('selected', key)
+    document.getElementById('title').innerHTML = key;
 
     for (let i in selected['cluster_centroids']) {
         let point = selected['cluster_centroids'][i];
@@ -43,5 +65,3 @@ cycleData = () => {
         markers.push(marker);
     }
 }
-
-setInterval(cycleData, 2000);
