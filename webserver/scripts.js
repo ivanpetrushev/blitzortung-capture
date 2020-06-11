@@ -32,6 +32,7 @@ cycleData = () => {
     let key = Object.keys(data)[currentIdx];
     let selected = data[key];
     console.log('selected', key)
+    document.getElementById('title').innerHTML = key;
     for (let i in markers) {
         mymap.removeLayer(markers[i]);
     }
