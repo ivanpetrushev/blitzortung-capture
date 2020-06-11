@@ -42,6 +42,10 @@ def on_close(ws):
 def on_open(ws):
     def run(*args):
         ws.send('{"time":0}')
+        while True:
+            time.sleep(30)
+            ws.send('{}')
+            
         # time.sleep(1)
         # ws.close()
         # print("thread terminating...")
