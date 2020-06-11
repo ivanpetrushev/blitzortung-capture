@@ -9,6 +9,7 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     tileSize: 512,
     zoomOffset: -1
 }).addTo(mymap);
+L.control.scale().addTo(mymap);
 
 let data = [];
 let markers = [];
@@ -47,6 +48,7 @@ let interval = setInterval(cycleData, 1000);
 onSliderChanged = (value) => {
     clearInterval(interval);
     displayData(value);
+    currentIdx = value;
 }
 
 displayData = (i) => {
@@ -56,7 +58,6 @@ displayData = (i) => {
 
     let key = Object.keys(data)[i];
     let selected = data[key];
-    console.log('selected', key)
     document.getElementById('title').innerHTML = key;
 
     for (let i in selected['cluster_centroids']) {
@@ -64,4 +65,22 @@ displayData = (i) => {
         let marker = L.marker([point['lat'], point['lon']]).addTo(mymap);
         markers.push(marker);
     }
+}
+
+goBack = () => {
+    clearInterval(interval);
+    currentIdx--;
+    if (currentIdx < 0) {
+        currentIdx = 0;
+    }
+    displayData(currentIdx);
+}
+
+goForth = () => {
+    clearInterval(interval);
+    currentIdx++;
+    if (currentIdx > Object.keys(data).length - 1) {
+        currentIdx = Object.keys(data).length - 1;
+    }
+    displayData(currentIdx);
 }

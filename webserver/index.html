@@ -15,6 +15,8 @@
 
 <body>
     <span>Lightning clusters (5+ strikes in 20 km radius / 2 min)</span>
+    <button onclick="goBack()">&lt;</button>
+    <button onclick="goForth()">&gt;</button>
     <input type="range" min="0" max="100" value="0" class="slider" id="slider" oninput="onSliderChanged(this.value)" />
     <div id="mapid">
         <h1 id="title">Looping periods...</h1>
