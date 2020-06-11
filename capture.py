@@ -4,6 +4,8 @@ from datetime import datetime
 import geohash
 from random import randint
 import pandas as pd
+import os
+from calculate_dbscan import calculate_clusters
 
 try:
     import thread
@@ -11,18 +13,21 @@ except ImportError:
     import _thread as thread
 import time
 
+CALCULATE_INTERVAL = 120
+KEEP_OLD_DATA_WINDOW = 600
+
 counter = 0
-save = []
+working_set = []
 
 
 def on_message(ws, message):
     global counter
-    global save
+    global working_set
     data = json.loads(message)
     counter += 1
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     gh = geohash.encode(data['lat'], data['lon'])
-    save.append({
+    working_set.append({
         'lat': data['lat'],
         'lon': data['lon'],
         'geohash': gh,
@@ -30,7 +35,7 @@ def on_message(ws, message):
         'ts': int(time.time())
     })
     print(
-        f"message #{counter} {now} {gh} {data['lat']} {data['lon']} save len: {len(save)}")
+        f"message #{counter} {now} {gh} {data['lat']} {data['lon']} working_set len: {len(working_set)}")
 
 
 def on_error(ws, error):
@@ -38,29 +43,35 @@ def on_error(ws, error):
 
 
 def on_close(ws):
-    global save
+    global working_set
     print("### closed ###")
-    now = datetime.now().strftime('%Y%m%d-%H%M%S')
-    filename = 'capture-' + now + '.json'
-    with open(filename, 'w') as fp:
-        json.dump(save, fp)
-    print('saved')
 
 
 def on_open(ws):
     def run(*args):
         ws.send('{"time":0}')
         while True:
-            time.sleep(30)
+            time.sleep(30)  # keep alive websocket
             ws.send('{}')
 
     def calculate(*args):
-        global save
+        global working_set
         while True:
-            time.sleep(10)
-            ts_threshold = int(time.time()) - 15
-            save = [x for x in save if x['ts'] > ts_threshold]
-            print("CALCULATING")
+            time.sleep(CALCULATE_INTERVAL)
+            ts_threshold = int(time.time()) - KEEP_OLD_DATA_WINDOW
+            working_set = [x for x in working_set if x['ts'] > ts_threshold]
+            # filter_geohash = ['u2', 'u8', 'sr', 'sx']  # Bulgaria
+            clusters = calculate_clusters(working_set)
+
+            if os.path.exists('webserver/data.json'):
+                with open('webserver/data.json', 'r') as fp:
+                    old_data = json.load(fp)
+            else:
+                old_data = {}
+            with open('webserver/data.json', 'w') as fp:
+                now = datetime.now().strftime('%Y%m%d-%H%M%S')
+                old_data[now] = {'cluster_centroids': clusters}
+                json.dump(old_data, fp)
 
     thread.start_new_thread(run, ())
     thread.start_new_thread(calculate, ())
