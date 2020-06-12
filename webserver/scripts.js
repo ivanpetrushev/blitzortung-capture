@@ -60,9 +60,10 @@ displayData = (i) => {
     let selected = data[key];
     document.getElementById('title').innerHTML = key;
 
-    for (let i in selected['cluster_centroids']) {
-        let point = selected['cluster_centroids'][i];
+    for (let j in selected) {
+        let point = selected[j]['center'];
         let marker = L.marker([point['lat'], point['lon']]).addTo(mymap);
+        marker.bindPopup('Strikes: ' + selected[j]['count']);
         markers.push(marker);
     }
 }
