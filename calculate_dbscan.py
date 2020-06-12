@@ -33,10 +33,13 @@ def calculate_clusters(data, gh_filter=[]):
 
     # add Centroids to output
     centermost_points = clusters.map(get_centermost_point)
-    for point in centermost_points:
+    for i, point in enumerate(centermost_points):
         out.append({
-            'lat': point[0],
-            'lon': point[1]
+            'center': {
+                'lat': point[0],
+                'lon': point[1]
+            },
+            'count': len(clusters[i])
         })
 
     return out

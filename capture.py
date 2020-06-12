@@ -70,7 +70,7 @@ def on_open(ws):
                 old_data = {}
             with open('webserver/data.json', 'w') as fp:
                 now = datetime.now().strftime('%Y%m%d-%H%M%S')
-                old_data[now] = {'cluster_centroids': clusters}
+                old_data[now] = clusters
                 json.dump(old_data, fp)
 
     thread.start_new_thread(run, ())
