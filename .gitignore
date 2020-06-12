@@ -1,3 +1,5 @@
 capture-*
 .idea
 data.json
+__pycache__
+venv/
