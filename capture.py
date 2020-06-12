@@ -35,16 +35,16 @@ def on_message(ws, message):
         'ts': int(time.time())
     })
     print(
-        f"message #{counter} {now} {gh} {data['lat']} {data['lon']} working_set len: {len(working_set)}")
+        f"message #{counter} {now} {gh} {data['lat']:>10} {data['lon']:>10} working_set len: {len(working_set)}", end='\r')
 
 
 def on_error(ws, error):
-    print('error', error)
+    print("\nerror", error)
 
 
 def on_close(ws):
     global working_set
-    print("### closed ###")
+    print("\n### closed ###")
 
 
 def on_open(ws):
@@ -78,7 +78,7 @@ def on_open(ws):
 
 
 if __name__ == "__main__":
-    websocket.enableTrace(True)
+    # websocket.enableTrace(True)
     url = 'ws://ws' + str(randint(1, 5)) + '.blitzortung.org'
     port = str(randint(8050, 8090))
     ws = websocket.WebSocketApp(url + ':' + port + '/',

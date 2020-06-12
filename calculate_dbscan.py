@@ -29,7 +29,7 @@ def calculate_clusters(data, gh_filter=[]):
     num_clusters = len(set(cluster_labels)) - 1  # -1 ?
     clusters = pd.Series([coords[cluster_labels == n]
                           for n in range(num_clusters)])
-    print('Number of clusters: {}'.format(num_clusters))
+    print("\nNumber of clusters: {}".format(num_clusters))
 
     # add Centroids to output
     centermost_points = clusters.map(get_centermost_point)
