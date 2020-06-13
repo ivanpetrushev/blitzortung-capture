@@ -3,3 +3,4 @@ capture-*
 data.json
 __pycache__
 venv/
+vscode*

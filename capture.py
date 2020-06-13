@@ -35,7 +35,7 @@ def on_message(ws, message):
         'ts': int(time.time())
     })
     print(
-        f"message #{counter} {now} {gh} {data['lat']:>10} {data['lon']:>10} working_set len: {len(working_set)}", end='\r')
+        f"message #{counter} {now} {gh} {data['lat']:>9} {data['lon']:>11} working_set len: {len(working_set)}", end='\r')
 
 
 def on_error(ws, error):
