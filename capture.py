@@ -35,7 +35,7 @@ def on_message(ws, message):
         'ts': int(time.time())
     })
     print(
-        f"message #{counter} {now} {gh} {data['lat']:>9} {data['lon']:>11} working_set len: {len(working_set)}", end='\r')
+        f"message #{counter} {now} {gh[:5]} {data['lat']:7.2f} {data['lon']:7.2f} working_set len: {len(working_set)}", end='\r')
 
 
 def on_error(ws, error):
@@ -61,7 +61,11 @@ def on_open(ws):
             ts_threshold = int(time.time()) - KEEP_OLD_DATA_WINDOW
             working_set = [x for x in working_set if x['ts'] > ts_threshold]
             # filter_geohash = ['u2', 'u8', 'sr', 'sx']  # Bulgaria
-            clusters = calculate_clusters(working_set)
+            try:
+                clusters = calculate_clusters(working_set)
+            except:
+                print('exception?')
+                continue
 
             if os.path.exists('webserver/data.json'):
                 with open('webserver/data.json', 'r') as fp:
