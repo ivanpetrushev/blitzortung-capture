@@ -5,6 +5,8 @@ import geohash
 from random import randint
 import pandas as pd
 import os
+import sys
+from random import choice
 from calculate_dbscan import calculate_clusters
 
 try:
@@ -61,10 +63,13 @@ def on_open(ws):
             ts_threshold = int(time.time()) - KEEP_OLD_DATA_WINDOW
             working_set = [x for x in working_set if x['ts'] > ts_threshold]
             # filter_geohash = ['u2', 'u8', 'sr', 'sx']  # Bulgaria
+            if len(working_set) == 0:
+                continue
+
             try:
                 clusters = calculate_clusters(working_set)
             except:
-                print('exception?')
+                print('exception?', sys.exc_info()[0])
                 continue
 
             if os.path.exists('webserver/data.json'):
@@ -83,8 +88,11 @@ def on_open(ws):
 
 if __name__ == "__main__":
     # websocket.enableTrace(True)
-    url = 'ws://ws' + str(randint(1, 5)) + '.blitzortung.org'
-    port = str(randint(8050, 8090))
+    ws_servers = ["ws1.blitzortung.org", "ws5.blitzortung.org",
+                  "ws6.blitzortung.org", "ws7.blitzortung.org"]
+    url = "wss://" + choice(ws_servers)
+    print(f'Connecting to {url}')
+    port = "3000"
     ws = websocket.WebSocketApp(url + ':' + port + '/',
                                 on_message=on_message,
                                 on_error=on_error,
