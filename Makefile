@@ -6,3 +6,6 @@ capture-start:
 	python capture.py
 detect-clusters:
 	python plot-multiple-dbscan.py
+screen:
+	. venv/bin/activate && screen -d -m -S blitzortung-capture python capture.py
+
